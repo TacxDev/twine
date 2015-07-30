@@ -117,10 +117,15 @@ module Twine
         raise NotImplementedError.new("You must implement write_file in your formatter class.")
       end
 
+      def write_language_paths(path)
+      end
+
       def write_all_files(path)
         if !File.directory?(path)
           raise Twine::Error.new("Directory does not exist: #{path}")
         end
+        
+        write_language_paths(path)
 
         file_name = @options[:file_name] || default_file_name
         langs_written = []

@@ -25,6 +25,14 @@ module Twine
         return
       end
 
+      def write_language_paths(path)
+        @strings.language_codes.each do |language_code|
+          language_dir = "#{language_code}.lproj"
+          language_path = File.join(path,language_dir)
+          Dir.mkdir language_path
+        end
+      end
+
       def read_file(path, lang)
         encoding = Twine::Encoding.encoding_for_path(path)
         sep = nil

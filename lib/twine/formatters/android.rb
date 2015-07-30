@@ -50,9 +50,10 @@ module Twine
 
       def read_file(path, lang)
         resources_regex = /<resources(?:[^>]*)>(.*)<\/resources>/m
-        key_regex = /<string name="(\w+)">/
+        key_regex = /<(string|color) name="(\w+)">/
         comment_regex = /<!-- (.*) -->/
-        value_regex = /<string name="\w+">(.*)<\/string>/
+        value_regex = /<(string|color) name="(\w+)">([^<]*)<\/(string|color)>/
+        ref_regex = /@\w+\/(\w+)/
         key = nil
         value = nil
         comment = nil
@@ -60,32 +61,35 @@ module Twine
         File.open(path, 'r:UTF-8') do |f|
           content_match = resources_regex.match(f.read)
           if content_match
-            for line in content_match[1].split(/\r?\n/)
-              key_match = key_regex.match(line)
-              if key_match
-                key = key_match[1]
-                value_match = value_regex.match(line)
-                if value_match
-                  value = value_match[1]
-                  value = CGI.unescapeHTML(value)
-                  value.gsub!('\\\'', '\'')
-                  value.gsub!('\\"', '"')
-                  value = iosify_substitutions(value)
-                  value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
+            content = content_match[1] 
+            content = content.gsub(/\r\s*/," ")
+            content = content.gsub(/\n\s*/," ")
+            content = content.gsub(/\r\n\s*/," ")
+            content = content.gsub(/>\s*</,">\n<")
+            for item in content.scan(value_regex)
+              key = item[1]
+              value = item[2]
+              ref_match = ref_regex.match(value)
+              if ref_match
+                ref = ref_match[1]
+                if @strings.strings_map.include?(ref)
+                  value = @strings.strings_map[ref].translations[lang]
                 else
                   value = ""
                 end
-                set_translation_for_key(key, lang, value)
-                if comment and comment.length > 0 and !comment.start_with?("SECTION:")
-                  set_comment_for_key(key, comment)
-                end
-                comment = nil
+              else
+                value = CGI.unescapeHTML(value)
+                value.gsub!('\\\'', '\'')
+                value.gsub!('\\"', '"')
+                value = iosify_substitutions(value)
+                value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
               end
 
-              comment_match = comment_regex.match(line)
-              if comment_match
-                comment = comment_match[1]
+              set_translation_for_key(key, lang, value)
+              if comment and comment.length > 0 and !comment.start_with?("SECTION:")
+                set_comment_for_key(key, comment)
               end
+              comment = nil
             end
           end
         end
