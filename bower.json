@@ -1,6 +1,6 @@
 {
-  "name": "twine-tacx",
-  "description": "Manage strings and their translations for your iOS and Android projects",
-  "version": "0.1.0",
+  "name": "twine",
+  "description": "Manage strings and their translations for your iOS, Android and AngularJS projects",
+  "version": "0.6.0",
   "ignore": []
 }
