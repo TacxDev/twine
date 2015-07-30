@@ -1,6 +1,6 @@
 {
   "name": "twine",
-  "description": "Code that is shared between Android, iOS and other platforms",
-  "version": "Manage strings and their translations for your iOS and Android projects.",
+  "description": "Manage strings and their translations for your iOS and Android projects",
+  "version": "0.6.0",
   "ignore": []
 }
