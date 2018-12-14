@@ -222,7 +222,7 @@ module Twine
             end
             
             if !value && !definition.reference_key
-              puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
+              Twine::stdout.puts "WARNING: #{definition.key} does not exist in developer language '#{dev_lang}'"
             end
             
             if definition.reference_key

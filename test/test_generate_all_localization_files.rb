@@ -24,10 +24,6 @@ class TestGenerateAllLocalizationFiles < CommandTest
     def setup
       super
       Dir.mkdir File.join @output_dir, 'values-en'
-
-      # both Android and Tizen can handle folders containing `values-en`
-      android_formatter = prepare_mock_formatter(Twine::Formatters::Android)
-      tizen_formatter = prepare_mock_formatter(Twine::Formatters::Tizen, false)
     end
 
     def new_runner(options = {})
@@ -47,8 +43,8 @@ class TestGenerateAllLocalizationFiles < CommandTest
   end
 
   class TestDoNotCreateFolders < TestGenerateAllLocalizationFiles
-    def new_runner(twine_file = nil)
-      super(false, twine_file)
+    def new_runner(twine_file = nil, options = {})
+      super(false, twine_file, options)
     end
 
     def test_fails_if_output_folder_does_not_exist
@@ -60,39 +56,53 @@ class TestGenerateAllLocalizationFiles < CommandTest
     def test_does_not_create_language_folders
       Dir.mkdir File.join @output_dir, 'en.lproj'
       new_runner.generate_all_localization_files
-      refute File.exists?(File.join(@output_dir, 'es.lproj')), "language folder should not be created"
+      refute File.exist?(File.join(@output_dir, 'es.lproj')), "language folder should not be created"
     end
 
     def test_prints_empty_file_warnings
       Dir.mkdir File.join @output_dir, 'en.lproj'
       empty_twine_file = build_twine_file('en') {}
       new_runner(empty_twine_file).generate_all_localization_files
-      assert_match "Skipping file at path", Twine::stderr.string
+      assert_match "Skipping file at path", Twine::stdout.string
+    end
+
+    def test_does_not_print_empty_file_warnings_if_quite
+      Dir.mkdir File.join @output_dir, 'en.lproj'
+      empty_twine_file = build_twine_file('en') {}
+      new_runner(empty_twine_file, quite: true).generate_all_localization_files
+      refute_match "Skipping file at path", Twine::stdout.string
     end
   end
 
   class TestCreateFolders < TestGenerateAllLocalizationFiles
-    def new_runner(twine_file = nil)
-      super(true, twine_file)
+    def new_runner(twine_file = nil, options = {})
+      super(true, twine_file, options)
     end
 
     def test_creates_output_folder
       FileUtils.remove_entry_secure @output_dir
       new_runner.generate_all_localization_files
-      assert File.exists? @output_dir
+      assert File.exist? @output_dir
     end
 
     def test_creates_language_folders
       new_runner.generate_all_localization_files
-      assert File.exists?(File.join(@output_dir, 'en.lproj')), "language folder 'en.lproj' should be created"
-      assert File.exists?(File.join(@output_dir, 'es.lproj')), "language folder 'es.lproj' should be created"
+      assert File.exist?(File.join(@output_dir, 'en.lproj')), "language folder 'en.lproj' should be created"
+      assert File.exist?(File.join(@output_dir, 'es.lproj')), "language folder 'es.lproj' should be created"
     end
 
     def test_prints_empty_file_warnings
       empty_twine_file = build_twine_file('en') {}
       new_runner(empty_twine_file).generate_all_localization_files
 
-      assert_match "Skipping file at path", Twine::stderr.string
+      assert_match "Skipping file at path", Twine::stdout.string
+    end
+
+    def test_does_not_print_empty_file_warnings_if_quite
+      empty_twine_file = build_twine_file('en') {}
+      new_runner(empty_twine_file, quite: true).generate_all_localization_files
+
+      refute_match "Skipping file at path", Twine::stdout.string
     end
   end
 
