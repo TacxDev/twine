@@ -149,6 +149,8 @@
 		en = #001d252d
 	[tacx_grey]
 		en = #303d45
+	[tacx_grey_50]
+		en = #80303d45
 	[tacx_grey_two]
 		en = #37434F
 	[tacx_grey_three]
