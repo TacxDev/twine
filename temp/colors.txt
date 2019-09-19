@@ -38,6 +38,8 @@
 	[green]
 		en = #87c200
 		comment = POWER
+	[green_upload_progress]
+		en = #edfacd
 	[purple]
 		en = #dd3ae9
 		comment = PURPLE
@@ -137,6 +139,8 @@
 		en = #b9d9eb
 	[tacx_blue_grey]
 		en = #5e6f7e
+	[tacx_blue_grey_80]
+		en = #cc5e6f7e
 	[tacx_blue_grey_20]
 		en = #345e6f7e
 	[tacx_blue_grey_20_on_dark]
@@ -178,6 +182,8 @@
 	[divider_graph]
 		en = #56979797
 		comment = replace all dark strokes, with divider
+	[divider_settings_my_profile]
+		en = #1B979797
 	[ripple_color]
 		en = #4D000000
 	[dark_background]
@@ -456,6 +462,10 @@
 	[iceBlue]
 		en = #e9f7ff
 		comment = Workout details
+	[iceBlue_80]
+		en = #cce9f7ff
+	[iceBlue_50]
+		en = #80e9f7ff
 	[training_active_element]
 		en = #212124
 		comment = TRAINING UNITS
