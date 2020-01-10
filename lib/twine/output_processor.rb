@@ -43,6 +43,7 @@ module Twine
             new_definition.translations[language] = value
 
             if definition.is_plural?
+              Twine::stderr.puts "Outputting plural definition '#{new_definition.key}-#{value}' to twine file for language '#{language}'."
               # If definition is plural, but no translation found -> create
               # Then check 'other' key
               if !(new_definition.plural_translations[language] ||= {}).key? 'other'

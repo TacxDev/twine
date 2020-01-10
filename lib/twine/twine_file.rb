@@ -220,11 +220,11 @@ module Twine
             else
                 value = write_value(definition, dev_lang, f)
             end
-            
+
             if !value && !definition.reference_key
-              Twine::stdout.puts "WARNING: #{definition.key} does not exist in developer language '#{dev_lang}'"
+              puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
             end
-            
+
             if definition.reference_key
               f.puts "\t\tref = #{definition.reference_key}"
             end
@@ -236,7 +236,11 @@ module Twine
               f.puts "\t\tcomment = #{definition.raw_comment}"
             end
             @language_codes[1..-1].each do |lang|
-              write_value(definition, lang, f)
+              if definition.is_plural?
+                  write_plural_value(definition, lang, f)
+              else
+                  write_value(definition, lang, f)
+              end
             end
           end
         end

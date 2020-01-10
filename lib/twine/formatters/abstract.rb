@@ -63,14 +63,14 @@ module Twine
           @twine_file.add_language_code(lang)
         end
       end
-      
+
       def set_plural_translation_for_key(key, lang, plural_hash)
         if @twine_file.definitions_by_key.include?(key)
           definition = @twine_file.definitions_by_key[key]
           reference = @twine_file.definitions_by_key[definition.reference_key] if definition.reference_key
-              
-          if !reference or value != reference.plural_translations[lang]
-            definition.plural_translations[lang] = value
+
+          if !reference or plural_hash != reference.plural_translations[lang]
+            definition.plural_translations[lang] = plural_hash
           end
         elsif @options[:consume_all]
           Twine::stderr.puts "Adding new plural definition '#{key}' to twine file."
